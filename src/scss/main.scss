@@ -1,3 +1,12 @@
-body {
-    background-color: black;
-}
+@import 'abstracts/placeholders';
+
+@import 'base/normalize';
+@import 'base/supplement';  
+@import 'base/typography'; 
+
+@import "./layout/wrapper";
+@import "./layout/description";
+@import "./layout/input-window";
+@import "./layout/keyboard";
+
+@import "./components/keyboard-button";

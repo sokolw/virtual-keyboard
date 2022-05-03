@@ -1,16 +1,6 @@
 import '../scss/main.scss';
+import Application from './modules/Application';
 
 window.app = {
-  run: null,
+  run: new Application(),
 };
-
-function component() {
-  const element = document.createElement('div');
-  element.textContent = 'Привет';
-  return element;
-}
-
-document.body.append(component());
-
-// eslint-disable-next-line no-alert
-alert('test');

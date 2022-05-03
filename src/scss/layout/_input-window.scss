@@ -1,0 +1,17 @@
+.input-window {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.input-window__textarea {
+  font-size: 1.8rem;
+  background-color: black;
+  border: 6px solid #ec4a91;
+  border-radius: 10px;
+  width: 60rem;
+  height: 20rem;
+  color: white;
+  resize: none;
+}

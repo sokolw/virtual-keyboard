@@ -8,6 +8,8 @@ export default class Keyboard {
 
   currentCaretPosition;
 
+  toggle = false;
+
   constructor(textContainer = null, language = 'en') {
     this.keysData = new KeyboardKeysData();
     // temp
@@ -65,20 +67,12 @@ export default class Keyboard {
   createGlobalKeyHandlers() {
     window.addEventListener('keydown', this.keydownHandler.bind(this));
     window.addEventListener('keyup', this.keyupHandler.bind(this));
-    // window.addEventListener('blur', this.blurHandler.bind(this));
   }
 
   // key events
   keydownHandler(event) {
     if (this.buttonsInContainer.has(event.code)) {
       event.preventDefault();
-      this.currentCaretPosition = this.inputContainer.selectionStart;
-      // eslint-disable-next-line no-console
-      console.log(this.currentCaretPosition);
-      // eslint-disable-next-line no-console
-      // console.log(event.code); ControlLeft AltRight-toggled
-      // this.activateButton(event);
-
       // engine
       if (this.virtualCommandCombineKeys.has(event.code)) {
         if (event.code === 'CapsLock') {
@@ -125,12 +119,6 @@ export default class Keyboard {
         this.inputContainer.scrollTop = this.inputContainer.scrollHeight;
         this.inputContainer.focus();
       }
-
-      // this.inputContainer.textContent += `${event.code}->`;
-      // this.inputContainer.textContent += `${this.currentLanguageData[0].get(event.code)}`;
-
-      // this.currentCaretPosition = this.inputContainer.textContent.length;
-      // this.inputContainer.setSelectionRange(this.current, this.currentCaretPosition);
     }
   }
 
@@ -150,22 +138,116 @@ export default class Keyboard {
   // mouse events
   mousedownHandler(event) {
     const key = event.currentTarget.getAttribute('data-id');
+    // if (this.buttonsInContainer.has(key)) {
+    //   if (!this.buttonsInContainer.get(key).classList.contains('active')) {
+    //     this.buttonsInContainer.get(key).classList.add('active');
+    //   }
+    //   this.inputContainer.textContent += `${this.currentLanguageData[0].get(key)}`;
+    //   this.inputContainer.scrollTop = this.inputContainer.scrollHeight;
+    // }
+
     if (this.buttonsInContainer.has(key)) {
-      if (!this.buttonsInContainer.get(key).classList.contains('active')) {
-        this.buttonsInContainer.get(key).classList.add('active');
+      // engine
+      if (this.virtualCommandCombineKeys.has(key)) {
+        if (key === 'CapsLock') {
+          this.toggleCapsLock({ code: key });
+        } else {
+          this.activateButton({ code: key });
+          if (!this.virtualCommandCombineKeys.get(key)) {
+            this.virtualCommandCombineKeys.set(key, true);
+          } else if (this.virtualCommandCombineKeys.get('AltLeft')
+            || this.virtualCommandCombineKeys.get('AltRight')
+            || this.virtualCommandCombineKeys.get('ControlLeft')
+            || this.virtualCommandCombineKeys.get('ControlRight')
+          ) {
+            this.virtualCommandCombineKeys.set(key, false);
+            this.disableButton({ code: key });
+          }
+          // switch language
+          if ((this.virtualCommandCombineKeys.get('AltLeft')
+            || this.virtualCommandCombineKeys.get('AltRight'))
+            && (this.virtualCommandCombineKeys.get('ShiftLeft')
+            || this.virtualCommandCombineKeys.get('ShiftRight'))) {
+            if (this.virtualCommandCombineKeys.get('CapsLock')) {
+              this.disableCapsLock('CapsLock');
+              this.updateKeyboardLanguage();
+              this.enableCapsLock('CapsLock');
+            } else {
+              this.updateKeyboardLanguage();
+              this.disableButton({ code: 'AltLeft' });
+              this.disableButton({ code: 'AltRight' });
+              this.disableButton({ code: 'ShiftLeft' });
+              this.disableButton({ code: 'ShiftRight' });
+              this.virtualCommandCombineKeys.set('AltLeft', false);
+              this.virtualCommandCombineKeys.set('AltRight', false);
+              this.virtualCommandCombineKeys.set('ShiftLeft', false);
+              this.virtualCommandCombineKeys.set('ShiftRight', false);
+            }
+          }
+          // shift
+          if (!(this.virtualCommandCombineKeys.get('AltLeft')
+          || this.virtualCommandCombineKeys.get('AltRight'))
+          && (this.virtualCommandCombineKeys.get('ShiftLeft')
+          || this.virtualCommandCombineKeys.get('ShiftRight'))) {
+            // eslint-disable-next-line no-console
+            console.log(key);
+            this.virtualToggleShift(key);
+            if (!this.virtualCommandCombineKeys.get(key)) {
+              this.disableButton({ code: key });
+            }
+          }
+        }
+      } else {
+        this.activateButton({ code: key });
+        if (key === 'Backspace') {
+          this.textContainer.backspace();
+        } else if (key === 'Delete') {
+          this.textContainer.delete();
+        } else if (key === 'Enter') {
+          this.textContainer.enter();
+        } else if (key === 'Tab') {
+          this.textContainer.tab();
+        } else if (key === 'ArrowUp') {
+          this.textContainer.up();
+        } else if (key === 'ArrowDown') {
+          this.textContainer.down();
+        } else if (key === 'ArrowLeft') {
+          this.textContainer.left();
+        } else if (key === 'ArrowRight') {
+          this.textContainer.right();
+        } else {
+          this.textContainer.addChar(this.isModifiedKey(key));
+        }
+        // работа с окном ??? скролл и тд
+        this.inputContainer.scrollTop = this.inputContainer.scrollHeight;
+        this.inputContainer.focus();
       }
-      this.inputContainer.textContent += `${this.currentLanguageData[0].get(key)}`;
-      this.inputContainer.scrollTop = this.inputContainer.scrollHeight;
     }
   }
 
   mouseupHandler(event) {
     const key = event.currentTarget.getAttribute('data-id');
+    // if (this.buttonsInContainer.has(key)) {
+    //   if (this.buttonsInContainer.get(key).classList.contains('active')) {
+    //     this.buttonsInContainer.get(key).classList.remove('active');
+    //   }
+    // }
+
     if (this.buttonsInContainer.has(key)) {
-      if (this.buttonsInContainer.get(key).classList.contains('active')) {
-        this.buttonsInContainer.get(key).classList.remove('active');
+      if (key !== 'CapsLock'
+      && key !== 'AltLeft' && key !== 'AltRight'
+      && key !== 'ShiftLeft' && key !== 'ShiftRight'
+      && key !== 'ControlLeft' && key !== 'ControlRight') {
+        this.disableButton({ code: key });
+        if (this.virtualCommandCombineKeys.has(key)) {
+          if (this.virtualCommandCombineKeys.get(key)) {
+            this.toggleShift(key);
+          }
+        }
       }
     }
+    this.inputContainer.scrollTop = this.inputContainer.scrollHeight;
+    this.inputContainer.focus();
   }
 
   mouseoutHandler(event) {
@@ -176,10 +258,12 @@ export default class Keyboard {
   toggleLanguage(language) {
     if (language === 'en') {
       this.language = 'ru';
+      localStorage.setItem('language', 'ru');
       this.currentLanguageData = [this.keysData.codeKeyRuMap, this.keysData.shiftedCodeKeyRuMap];
     }
     if (language === 'ru') {
       this.language = 'en';
+      localStorage.setItem('language', 'en');
       this.currentLanguageData = [this.keysData.codeKeyEnMap, this.keysData.shiftedCodeKeyEnMap];
     }
   }
@@ -201,11 +285,6 @@ export default class Keyboard {
   updateKeys(value, key) {
     const temp = value;
     temp.firstChild.textContent = this.currentLanguageData[0].get(key);
-  }
-
-  blurHandler(event) { // no use
-    // eslint-disable-next-line no-console
-    console.log(`tab${event.code}${this.language}`);
   }
 
   toggleCapsLock(event) {
@@ -290,6 +369,24 @@ export default class Keyboard {
       return this.currentLanguageData[0].get(keyCode);
     }
     return this.currentLanguageData[0].get(keyCode);
+  }
+
+  virtualToggleShift(key) {
+    if (this.virtualCommandCombineKeys.get(key) && !this.virtualCommandCombineKeys.get('CapsLock') && !this.toggle) {
+      this.toggle = true;
+      this.buttonsInContainer.forEach(this.updateShiftKeys.bind(this));
+    } else if (this.virtualCommandCombineKeys.get(key) && !this.virtualCommandCombineKeys.get('CapsLock') && this.toggle) {
+      this.toggle = false;
+      this.virtualCommandCombineKeys.set(key, false);
+      this.buttonsInContainer.forEach(this.updateKeys.bind(this));
+    } else if (this.virtualCommandCombineKeys.get(key) && this.virtualCommandCombineKeys.get('CapsLock') && !this.toggle) {
+      this.toggle = true;
+      this.buttonsInContainer.forEach(this.updateOnlyShiftKeys.bind(this));
+    } else if (this.virtualCommandCombineKeys.get(key) && this.virtualCommandCombineKeys.get('CapsLock') && this.toggle) {
+      this.toggle = false;
+      this.virtualCommandCombineKeys.set(key, false);
+      this.buttonsInContainer.forEach(this.updateCapsKeys.bind(this));
+    }
   }
 
   toggleShift(key) {

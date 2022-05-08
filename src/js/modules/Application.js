@@ -6,12 +6,15 @@ import Utilities from './Utilities';
 export default class Application {
   environment;
 
+  language;
+
   constructor() {
     this.init();
   }
 
   init() {
     this.environment = new Environment();
+    this.language = Application.loadLanguage();
     this.test();
   }
 
@@ -43,9 +46,13 @@ export default class Application {
     const TEXT_CONTAINER = new TextContainer();
     inputWindow.append(TEXT_CONTAINER.getInputContainer);
 
-    const KEYBOARD = new Keyboard(TEXT_CONTAINER);
+    const KEYBOARD = new Keyboard(TEXT_CONTAINER, this.language !== null ? this.language : 'en');
     wrapper.append(KEYBOARD.keyboard);
     // eslint-disable-next-line no-console
     console.log(KEYBOARD);
+  }
+
+  static loadLanguage() {
+    return window.localStorage.getItem('language');
   }
 }

@@ -1,0 +1,20 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    height: 100%;
+}
+body {
+    height: 100%;
+    background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(29,11,64,1) 20%, rgba(55,19,160,1) 49%, rgba(58,20,172,1) 62%, rgba(38,25,91,1) 90%, rgba(0,0,0,1) 100%);
+    background-repeat: no-repeat;
+}
+
+img {
+    max-width: 100%;
+    object-fit: cover;
+}

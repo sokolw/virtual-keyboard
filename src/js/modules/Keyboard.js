@@ -72,7 +72,7 @@ export default class Keyboard {
           this.toggleCapsLock(event);
         } else {
           this.activateButton(event);
-          if (event.altKey && event.shiftKey) {
+          if (event.altKey && event.ctrlKey) {
             if (this.virtualCommandCombineKeys.get('CapsLock')) {
               this.disableCapsLock('CapsLock');
               this.updateKeyboardLanguage();
@@ -145,8 +145,8 @@ export default class Keyboard {
           }
           if ((this.virtualCommandCombineKeys.get('AltLeft')
             || this.virtualCommandCombineKeys.get('AltRight'))
-            && (this.virtualCommandCombineKeys.get('ShiftLeft')
-            || this.virtualCommandCombineKeys.get('ShiftRight'))) {
+            && (this.virtualCommandCombineKeys.get('ControlLeft')
+            || this.virtualCommandCombineKeys.get('ControlRight'))) {
             if (this.virtualCommandCombineKeys.get('CapsLock')) {
               this.disableCapsLock('CapsLock');
               this.updateKeyboardLanguage();
@@ -388,11 +388,11 @@ export default class Keyboard {
   comboDisable() {
     this.disableButton({ code: 'AltLeft' });
     this.disableButton({ code: 'AltRight' });
-    this.disableButton({ code: 'ShiftLeft' });
-    this.disableButton({ code: 'ShiftRight' });
+    this.disableButton({ code: 'ControlLeft' });
+    this.disableButton({ code: 'ControlRight' });
     this.virtualCommandCombineKeys.set('AltLeft', false);
     this.virtualCommandCombineKeys.set('AltRight', false);
-    this.virtualCommandCombineKeys.set('ShiftLeft', false);
-    this.virtualCommandCombineKeys.set('ShiftRight', false);
+    this.virtualCommandCombineKeys.set('ControlLeft', false);
+    this.virtualCommandCombineKeys.set('ControlRight', false);
   }
 }

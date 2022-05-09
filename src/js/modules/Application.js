@@ -40,7 +40,7 @@ export default class Application {
 
     p = document.createElement('p');
     p.classList.add('description__language');
-    p.textContent = 'To switch the language, use the keyboard shortcut Alt + Shift';
+    p.textContent = 'To switch the language, use the keyboard shortcut Alt + Ctrl';
     description.append(p);
 
     const TEXT_CONTAINER = new TextContainer();

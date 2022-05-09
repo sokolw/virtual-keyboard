@@ -12,11 +12,8 @@ export default class Keyboard {
 
   constructor(textContainer = null, language = 'en') {
     this.keysData = new KeyboardKeysData();
-    // temp
     this.inputContainer = textContainer.getInputContainer;
-    // new use start
     this.textContainer = textContainer;
-    // new use end
     this.buttonsInContainer = new Map();
     this.language = language;
     this.virtualCommandCombineKeys = new Map([['CapsLock', false], ['ShiftLeft', false], ['ShiftRight', false], ['ControlLeft', false], ['ControlRight', false], ['MetaLeft', false], ['AltLeft', false], ['AltRight', false]]);
@@ -26,7 +23,6 @@ export default class Keyboard {
   init() {
     this.addLanguage(this.language);
     this.createKeyboardBox();
-    // init eng keys
     this.currentLanguageData[0].forEach(this.createKeys.bind(this));
     this.createGlobalKeyHandlers();
   }
@@ -54,7 +50,6 @@ export default class Keyboard {
     }
 
     keyboardButton.append(spanItem);
-    // add to container
     this.keyboard.append(keyboardButton);
   }
 
@@ -69,17 +64,14 @@ export default class Keyboard {
     window.addEventListener('keyup', this.keyupHandler.bind(this));
   }
 
-  // key events
   keydownHandler(event) {
     if (this.buttonsInContainer.has(event.code)) {
       event.preventDefault();
-      // engine
       if (this.virtualCommandCombineKeys.has(event.code)) {
         if (event.code === 'CapsLock') {
           this.toggleCapsLock(event);
         } else {
           this.activateButton(event);
-          // switch language
           if (event.altKey && event.shiftKey) {
             if (this.virtualCommandCombineKeys.get('CapsLock')) {
               this.disableCapsLock('CapsLock');
@@ -89,7 +81,6 @@ export default class Keyboard {
               this.updateKeyboardLanguage();
             }
           }
-          // shift
           if (event.shiftKey && !event.altKey) {
             this.toggleShift(event.code);
           }
@@ -115,7 +106,6 @@ export default class Keyboard {
         } else {
           this.textContainer.addChar(this.isModifiedKey(event.code));
         }
-        // работа с окном ??? скролл и тд
         this.inputContainer.scrollTop = this.inputContainer.scrollHeight;
         this.inputContainer.focus();
       }
@@ -135,19 +125,9 @@ export default class Keyboard {
     }
   }
 
-  // mouse events
   mousedownHandler(event) {
     const key = event.currentTarget.getAttribute('data-id');
-    // if (this.buttonsInContainer.has(key)) {
-    //   if (!this.buttonsInContainer.get(key).classList.contains('active')) {
-    //     this.buttonsInContainer.get(key).classList.add('active');
-    //   }
-    //   this.inputContainer.textContent += `${this.currentLanguageData[0].get(key)}`;
-    //   this.inputContainer.scrollTop = this.inputContainer.scrollHeight;
-    // }
-
     if (this.buttonsInContainer.has(key)) {
-      // engine
       if (this.virtualCommandCombineKeys.has(key)) {
         if (key === 'CapsLock') {
           this.toggleCapsLock({ code: key });
@@ -163,7 +143,6 @@ export default class Keyboard {
             this.virtualCommandCombineKeys.set(key, false);
             this.disableButton({ code: key });
           }
-          // switch language
           if ((this.virtualCommandCombineKeys.get('AltLeft')
             || this.virtualCommandCombineKeys.get('AltRight'))
             && (this.virtualCommandCombineKeys.get('ShiftLeft')
@@ -178,13 +157,10 @@ export default class Keyboard {
               this.comboDisable();
             }
           }
-          // shift
           if (!(this.virtualCommandCombineKeys.get('AltLeft')
           || this.virtualCommandCombineKeys.get('AltRight'))
           && (this.virtualCommandCombineKeys.get('ShiftLeft')
           || this.virtualCommandCombineKeys.get('ShiftRight'))) {
-            // eslint-disable-next-line no-console
-            console.log(key);
             this.virtualToggleShift(key);
             if (!this.virtualCommandCombineKeys.get(key)) {
               this.disableButton({ code: key });
@@ -212,7 +188,6 @@ export default class Keyboard {
         } else {
           this.textContainer.addChar(this.isModifiedKey(key));
         }
-        // работа с окном ??? скролл и тд
         this.inputContainer.scrollTop = this.inputContainer.scrollHeight;
         this.inputContainer.focus();
       }
@@ -221,12 +196,6 @@ export default class Keyboard {
 
   mouseupHandler(event) {
     const key = event.currentTarget.getAttribute('data-id');
-    // if (this.buttonsInContainer.has(key)) {
-    //   if (this.buttonsInContainer.get(key).classList.contains('active')) {
-    //     this.buttonsInContainer.get(key).classList.remove('active');
-    //   }
-    // }
-
     if (this.buttonsInContainer.has(key)) {
       if (key !== 'CapsLock'
       && key !== 'AltLeft' && key !== 'AltRight'
@@ -248,7 +217,6 @@ export default class Keyboard {
     this.mouseupHandler(event);
   }
 
-  // toggle language
   toggleLanguage(language) {
     if (language === 'en') {
       this.language = 'ru';

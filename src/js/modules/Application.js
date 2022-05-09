@@ -15,10 +15,10 @@ export default class Application {
   init() {
     this.environment = new Environment();
     this.language = Application.loadLanguage();
-    this.test();
+    this.run();
   }
 
-  test() {
+  run() {
     const wrapper = this.environment.getWrapper;
     document.body.append(wrapper);
     const description = Utilities.createDivElement();
@@ -48,8 +48,6 @@ export default class Application {
 
     const KEYBOARD = new Keyboard(TEXT_CONTAINER, this.language !== null ? this.language : 'en');
     wrapper.append(KEYBOARD.keyboard);
-    // eslint-disable-next-line no-console
-    console.log(KEYBOARD);
   }
 
   static loadLanguage() {

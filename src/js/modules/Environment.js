@@ -12,12 +12,7 @@ export default class Environment {
   }
 
   init() {
-    Environment.createHead();
     this.addWrapper();
-  }
-
-  static createHead() {
-    // реализовать добавление head
   }
 
   addWrapper() {

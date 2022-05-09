@@ -8,16 +8,11 @@ export default class TextContainer {
   constructor() {
     this.charVault = [];
     this.inputContainer = TextContainer.createInputContainer();
-    // this.init();
   }
 
   get getInputContainer() {
     return this.inputContainer;
   }
-
-  // init() {
-  //   this.inputContainer;
-  // }
 
   static createInputContainer() {
     const temp = Utilities.createTextareaElement();

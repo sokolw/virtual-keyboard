@@ -1,7 +1,7 @@
 .keyboard-button {
   width: 6%;
   height: 18%;
-  border: 3px solid #3c358e;
+  border: 3px solid $color-border;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -16,18 +16,18 @@
     -ms-user-select: none;
     user-select: none;
   }
-  box-shadow: 0px 4px 4px #ec4a91;
-  //в эффект нажатия засунуть
+  box-shadow: 0px 4px 4px $color-secondary;
+
   &:hover {
-    background-color: #3c358e;
-    color: #ec4a91;
+    background-color: $color-border;
+    color: $color-secondary;
     cursor: pointer;
   }
   @extend %transition;
 
   &.active {
-    background-color: #3c358e;
-    color: #ec4a91;
+    background-color: $color-border;
+    color: $color-secondary;
     box-shadow: none;
   }
 }
@@ -47,10 +47,6 @@
 .keyboard-button_shift {
   width: 12.64%;
 }
-
-// .keyboard-button_ctrl {
-//   width: 10%;
-// }
 
 .keyboard-button_space {
   width: 46%;

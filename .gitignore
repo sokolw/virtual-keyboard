@@ -21,3 +21,4 @@
 .eslintcache
 package-lock.json
 /design-layouts
+/dist

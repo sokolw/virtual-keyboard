@@ -172,16 +172,10 @@ export default class Keyboard {
               this.disableCapsLock('CapsLock');
               this.updateKeyboardLanguage();
               this.enableCapsLock('CapsLock');
+              this.comboDisable();
             } else {
               this.updateKeyboardLanguage();
-              this.disableButton({ code: 'AltLeft' });
-              this.disableButton({ code: 'AltRight' });
-              this.disableButton({ code: 'ShiftLeft' });
-              this.disableButton({ code: 'ShiftRight' });
-              this.virtualCommandCombineKeys.set('AltLeft', false);
-              this.virtualCommandCombineKeys.set('AltRight', false);
-              this.virtualCommandCombineKeys.set('ShiftLeft', false);
-              this.virtualCommandCombineKeys.set('ShiftRight', false);
+              this.comboDisable();
             }
           }
           // shift
@@ -421,5 +415,16 @@ export default class Keyboard {
     } else if (this.currentLanguageData[0].get(key).length === 1) {
       temp.firstChild.textContent = this.currentLanguageData[0].get(key);
     }
+  }
+
+  comboDisable() {
+    this.disableButton({ code: 'AltLeft' });
+    this.disableButton({ code: 'AltRight' });
+    this.disableButton({ code: 'ShiftLeft' });
+    this.disableButton({ code: 'ShiftRight' });
+    this.virtualCommandCombineKeys.set('AltLeft', false);
+    this.virtualCommandCombineKeys.set('AltRight', false);
+    this.virtualCommandCombineKeys.set('ShiftLeft', false);
+    this.virtualCommandCombineKeys.set('ShiftRight', false);
   }
 }
